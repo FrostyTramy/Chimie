@@ -20,6 +20,7 @@ def load_font(size):
 ATOM_FONT = load_font(26)
 TITLE_FONT = load_font(22)
 NOTE_FONT = load_font(18)
+TAG_FONT = load_font(26)
 
 
 def label(d, x, y, text):
@@ -42,6 +43,13 @@ def bond(d, p, q, order=1):
         )
 
 
+def number_tag(d, number):
+    text = f"Fig {number}"
+    box = d.textbbox((14, 28), text, font=TAG_FONT, anchor="lm")
+    d.rectangle([box[0] - 8, box[1] - 4, box[2] + 8, box[3] + 4], outline="black", width=2, fill="white")
+    d.text((14, 28), text, font=TAG_FONT, fill="black", anchor="lm")
+
+
 def figure(number, title, note, atoms, bonds):
     img = Image.new("RGB", (W, H), "white")
     d = ImageDraw.Draw(img)
@@ -50,6 +58,7 @@ def figure(number, title, note, atoms, bonds):
     for x, y, text in atoms.values():
         label(d, x, y, text)
     d.text((W / 2, 28), title, font=TITLE_FONT, fill="black", anchor="mm")
+    number_tag(d, number)
     d.text((W / 2, H - 28), note, font=NOTE_FONT, fill="black", anchor="mm")
     name = f"fig{number:02d}.png"
     img.save(os.path.join(HERE, name))
@@ -72,6 +81,7 @@ def ring_figure(number, title, note, centers, r, connect=None):
     if connect:
         d.line(connect, fill="black", width=3)
     d.text((W / 2, 28), title, font=TITLE_FONT, fill="black", anchor="mm")
+    number_tag(d, number)
     d.text((W / 2, H - 28), note, font=NOTE_FONT, fill="black", anchor="mm")
     name = f"fig{number:02d}.png"
     img.save(os.path.join(HERE, name))
